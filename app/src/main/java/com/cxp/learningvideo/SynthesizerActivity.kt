@@ -2,9 +2,10 @@ package com.cxp.learningvideo
 
 import android.os.Bundle
 import android.os.Environment
-import android.support.v7.app.AppCompatActivity
 import android.view.Surface
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import com.cxp.learningvideo.databinding.ActivitySynthesizerBinding
 import com.cxp.learningvideo.media.BaseDecoder
 import com.cxp.learningvideo.media.Frame
 import com.cxp.learningvideo.media.IDecoder
@@ -18,7 +19,6 @@ import com.cxp.learningvideo.media.encoder.VideoEncoder
 import com.cxp.learningvideo.media.muxer.MMuxer
 import com.cxp.learningvideo.opengl.drawer.VideoDrawer
 import com.cxp.learningvideo.opengl.egl.CustomerGLRenderer
-import kotlinx.android.synthetic.main.activity_synthesizer.*
 import java.util.concurrent.Executors
 
 
@@ -30,7 +30,9 @@ import java.util.concurrent.Executors
  * @version LearningVideo
  *
  */
-class SynthesizerActivity: AppCompatActivity(), MMuxer.IMuxerStateListener {
+class SynthesizerActivity : AppCompatActivity(), MMuxer.IMuxerStateListener {
+
+    private lateinit var binding: ActivitySynthesizerBinding
 
     private val path = Environment.getExternalStorageDirectory().absolutePath + "/mvtest.mp4"
 
@@ -48,13 +50,14 @@ class SynthesizerActivity: AppCompatActivity(), MMuxer.IMuxerStateListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_synthesizer)
+        binding = ActivitySynthesizerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         muxer.setStateListener(this)
     }
 
     fun onStartClick(view: View) {
-        btn.text = "正在编码"
-        btn.isEnabled = false
+        binding.btn.text = "正在编码"
+        binding.btn.isEnabled = false
         initVideo()
         initAudio()
         initAudioEncoder()
@@ -62,7 +65,6 @@ class SynthesizerActivity: AppCompatActivity(), MMuxer.IMuxerStateListener {
     }
 
     private fun initVideoEncoder() {
-        // 视频编码器
         videoEncoder = VideoEncoder(muxer, 1920, 1080)
 
         renderer.setRenderMode(CustomerGLRenderer.RenderMode.RENDER_WHEN_DIRTY)
@@ -77,14 +79,12 @@ class SynthesizerActivity: AppCompatActivity(), MMuxer.IMuxerStateListener {
     }
 
     private fun initAudioEncoder() {
-        // 音频编码器
         audioEncoder = AudioEncoder(muxer)
-        // 启动编码线程
         threadPool.execute(audioEncoder)
     }
 
     private fun initVideo() {
-        val drawer = VideoDrawer() // SoulVideoDrawer()
+        val drawer = VideoDrawer()
         drawer.setVideoSize(1920, 1080)
         drawer.getSurfaceTexture {
             initVideoDecoder(path, Surface(it))
@@ -106,8 +106,6 @@ class SynthesizerActivity: AppCompatActivity(), MMuxer.IMuxerStateListener {
             }
         })
         videoDecoder!!.goOn()
-
-        //启动解码线程
         threadPool.execute(videoDecoder!!)
     }
 
@@ -125,15 +123,13 @@ class SynthesizerActivity: AppCompatActivity(), MMuxer.IMuxerStateListener {
             }
         })
         audioDecoder!!.goOn()
-
-        //启动解码线程
         threadPool.execute(audioDecoder!!)
     }
 
     override fun onMuxerFinish() {
         runOnUiThread {
-            btn.isEnabled = true
-            btn.text = "编码完成"
+            binding.btn.isEnabled = true
+            binding.btn.text = "编码完成"
         }
 
         audioDecoder?.stop()

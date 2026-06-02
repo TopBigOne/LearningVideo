@@ -2,14 +2,14 @@ package com.cxp.learningvideo
 
 import android.os.Bundle
 import android.os.Environment
-import android.support.v7.app.AppCompatActivity
 import android.view.Surface
+import androidx.appcompat.app.AppCompatActivity
+import com.cxp.learningvideo.databinding.ActivityOpenglPlayerBinding
 import com.cxp.learningvideo.media.decoder.AudioDecoder
 import com.cxp.learningvideo.media.decoder.VideoDecoder
 import com.cxp.learningvideo.opengl.SimpleRender
 import com.cxp.learningvideo.opengl.drawer.IDrawer
 import com.cxp.learningvideo.opengl.drawer.VideoDrawer
-import kotlinx.android.synthetic.main.activity_opengl_player.*
 import java.util.concurrent.Executors
 
 
@@ -22,13 +22,17 @@ import java.util.concurrent.Executors
  * @Datetime 2019-10-26 21:07
  *
  */
-class OpenGLPlayerActivity: AppCompatActivity() {
+class OpenGLPlayerActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityOpenglPlayerBinding
+
     val path = Environment.getExternalStorageDirectory().absolutePath + "/mvtest.mp4"
     lateinit var drawer: IDrawer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_opengl_player)
+        binding = ActivityOpenglPlayerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initRender()
     }
 
@@ -38,10 +42,10 @@ class OpenGLPlayerActivity: AppCompatActivity() {
         drawer.getSurfaceTexture {
             initPlayer(Surface(it))
         }
-        gl_surface.setEGLContextClientVersion(2)
+        binding.glSurface.setEGLContextClientVersion(2)
         val render = SimpleRender()
         render.addDrawer(drawer)
-        gl_surface.setRenderer(render)
+        binding.glSurface.setRenderer(render)
     }
 
     private fun initPlayer(sf: Surface) {

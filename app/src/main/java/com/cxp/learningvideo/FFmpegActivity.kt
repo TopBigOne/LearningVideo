@@ -2,11 +2,11 @@ package com.cxp.learningvideo
 
 import android.os.Bundle
 import android.os.Environment
-import android.support.v7.app.AppCompatActivity
 import android.view.Surface
 import android.view.SurfaceHolder
 import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_ffmpeg_info.*
+import androidx.appcompat.app.AppCompatActivity
+import com.cxp.learningvideo.databinding.ActivityFfmpegInfoBinding
 import java.io.File
 
 
@@ -18,7 +18,9 @@ import java.io.File
  * @version LearningVideo
  *
  */
-class FFmpegActivity: AppCompatActivity() {
+class FFmpegActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityFfmpegInfoBinding
 
     val path = Environment.getExternalStorageDirectory().absolutePath + "/mvtest.mp4"
 
@@ -26,14 +28,15 @@ class FFmpegActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_ffmpeg_info)
-        tv.text = ffmpegInfo()
+        binding = ActivityFfmpegInfoBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.tv.text = ffmpegInfo()
         initSfv()
     }
 
     private fun initSfv() {
         if (File(path).exists()) {
-            sfv.holder.addCallback(object : SurfaceHolder.Callback {
+            binding.sfv.holder.addCallback(object : SurfaceHolder.Callback {
                 override fun surfaceChanged(holder: SurfaceHolder, format: Int,
                                             width: Int, height: Int) {}
                 override fun surfaceDestroyed(holder: SurfaceHolder) {}

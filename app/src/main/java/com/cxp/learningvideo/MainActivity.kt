@@ -1,31 +1,43 @@
 package com.cxp.learningvideo
 
+import android.Manifest
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
-import com.yanzhenjie.permission.AndPermission
-import com.yanzhenjie.permission.Permission
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        if (permissions.values.any { !it }) {
+            Toast.makeText(this, "请打开存储权限，否则无法读取本地文件", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        requestPermission()
+        requestStoragePermission()
     }
 
-    private fun requestPermission() {
-        val permissions = Permission.Group.STORAGE
-        AndPermission.with(this)
-            .runtime()
-            .permission(permissions)
-            .onGranted {
-            }
-            .onDenied {
-                Toast.makeText(this, "请打开权限，否则无法获取本地文件", Toast.LENGTH_SHORT).show()
-            }
-            .start()
+    private fun requestStoragePermission() {
+        val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arrayOf(
+                Manifest.permission.READ_MEDIA_VIDEO,
+                Manifest.permission.READ_MEDIA_AUDIO
+            )
+        } else {
+            arrayOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+        }
+        requestPermissionLauncher.launch(permissions)
     }
 
     fun clickSimplePlayer(view: View) {

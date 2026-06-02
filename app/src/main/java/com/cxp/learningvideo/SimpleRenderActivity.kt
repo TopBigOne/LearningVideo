@@ -2,12 +2,12 @@ package com.cxp.learningvideo
 
 import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
+import com.cxp.learningvideo.databinding.ActivitySimplerRenderBinding
 import com.cxp.learningvideo.opengl.SimpleRender
 import com.cxp.learningvideo.opengl.drawer.BitmapDrawer
 import com.cxp.learningvideo.opengl.drawer.IDrawer
 import com.cxp.learningvideo.opengl.drawer.TriangleDrawer
-import kotlinx.android.synthetic.main.activity_simpler_render.*
 
 
 /**
@@ -20,11 +20,14 @@ import kotlinx.android.synthetic.main.activity_simpler_render.*
  *
  */
 class SimpleRenderActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivitySimplerRenderBinding
     private lateinit var drawer: IDrawer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_simpler_render)
+        binding = ActivitySimplerRenderBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         drawer = if (intent.getIntExtra("type", 0) == 0) {
             TriangleDrawer()
@@ -35,10 +38,10 @@ class SimpleRenderActivity : AppCompatActivity() {
     }
 
     private fun initRender(drawer: IDrawer) {
-        gl_surface.setEGLContextClientVersion(2)
+        binding.glSurface.setEGLContextClientVersion(2)
         val render = SimpleRender()
         render.addDrawer(drawer)
-        gl_surface.setRenderer(render)
+        binding.glSurface.setRenderer(render)
     }
 
     override fun onDestroy() {

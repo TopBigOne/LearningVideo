@@ -2,10 +2,10 @@ package com.cxp.learningvideo
 
 import android.os.Bundle
 import android.os.Environment
-import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_ff_repack.*
+import androidx.appcompat.app.AppCompatActivity
+import com.cxp.learningvideo.databinding.ActivityFfRepackBinding
 import kotlin.concurrent.thread
 
 
@@ -18,23 +18,25 @@ import kotlin.concurrent.thread
  * @Datetime 2020-08-02 14:27
  *
  */
-class FFEncodeActivity: AppCompatActivity() {
+class FFEncodeActivity : AppCompatActivity() {
 
-    private var ffEncoder: Int = -1
+    private lateinit var binding: ActivityFfRepackBinding
+
+    private var ffEncoder: Long = -1
 
     private val srcPath = Environment.getExternalStorageDirectory().absolutePath + "/mvtest2.mp4"
     private val destPath = Environment.getExternalStorageDirectory().absolutePath + "/mvtest_en_out.mp4"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_ff_repack)
-        btn.text = "开始编码"
-
+        binding = ActivityFfRepackBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.btn.text = "开始编码"
         ffEncoder = initEncoder(srcPath, destPath)
     }
 
     fun onStartClick(view: View) {
-        if (ffEncoder != 0) {
+        if (ffEncoder != 0L) {
             startEncoder(ffEncoder)
             Toast.makeText(this, "开始编码", Toast.LENGTH_SHORT).show()
         }
@@ -47,11 +49,11 @@ class FFEncodeActivity: AppCompatActivity() {
         super.onDestroy()
     }
 
-    private external fun initEncoder(srcPath: String, destPath: String): Int
+    private external fun initEncoder(srcPath: String, destPath: String): Long
 
-    private external fun startEncoder(encoder: Int)
+    private external fun startEncoder(encoder: Long)
 
-    private external fun releaseEncoder(encoder: Int)
+    private external fun releaseEncoder(encoder: Long)
 
     companion object {
         init {

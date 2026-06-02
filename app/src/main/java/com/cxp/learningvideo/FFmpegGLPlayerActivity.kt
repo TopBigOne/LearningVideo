@@ -2,11 +2,11 @@ package com.cxp.learningvideo
 
 import android.os.Bundle
 import android.os.Environment
-import android.support.v7.app.AppCompatActivity
 import android.view.Surface
 import android.view.SurfaceHolder
 import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_ff_gl_player.*
+import androidx.appcompat.app.AppCompatActivity
+import com.cxp.learningvideo.databinding.ActivityFfGlPlayerBinding
 import java.io.File
 
 
@@ -19,7 +19,9 @@ import java.io.File
  * @Datetime 2020-06-01 09:04
  *
  */
-class FFmpegGLPlayerActivity: AppCompatActivity() {
+class FFmpegGLPlayerActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityFfGlPlayerBinding
 
     val path = Environment.getExternalStorageDirectory().absolutePath + "/mvtest.mp4"
 
@@ -27,13 +29,14 @@ class FFmpegGLPlayerActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_ff_gl_player)
+        binding = ActivityFfGlPlayerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initSfv()
     }
 
     private fun initSfv() {
         if (File(path).exists()) {
-            sfv.holder.addCallback(object : SurfaceHolder.Callback {
+            binding.sfv.holder.addCallback(object : SurfaceHolder.Callback {
                 override fun surfaceChanged(holder: SurfaceHolder, format: Int,
                                             width: Int, height: Int) {}
                 override fun surfaceDestroyed(holder: SurfaceHolder) {

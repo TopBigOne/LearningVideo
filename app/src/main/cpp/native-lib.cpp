@@ -119,21 +119,21 @@ extern "C" {
     }
 
 
-    JNIEXPORT jint JNICALL
+    JNIEXPORT jlong JNICALL
     Java_com_cxp_learningvideo_FFEncodeActivity_initEncoder(JNIEnv *env, jobject thiz, jstring inPath, jstring outPath) {
         Synthesizer *synthesizer = new Synthesizer(env, inPath, outPath);
-        return (jint)synthesizer;
+        return (jlong)synthesizer;
     }
 
     JNIEXPORT void JNICALL
-    Java_com_cxp_learningvideo_FFEncodeActivity_startEncoder(JNIEnv *env, jobject thiz, jint synthesizer) {
+    Java_com_cxp_learningvideo_FFEncodeActivity_startEncoder(JNIEnv *env, jobject thiz, jlong synthesizer) {
         Synthesizer *s =  (Synthesizer *)synthesizer;
         s->Start();
     }
 
     JNIEXPORT void JNICALL
-    Java_com_cxp_learningvideo_FFEncodeActivity_releaseEncoder(JNIEnv *env, jobject thiz, jint synthesizer) {
+    Java_com_cxp_learningvideo_FFEncodeActivity_releaseEncoder(JNIEnv *env, jobject thiz, jlong synthesizer) {
         Synthesizer *s =  (Synthesizer *)synthesizer;
-        delete synthesizer;
+        delete s;
     }
 }

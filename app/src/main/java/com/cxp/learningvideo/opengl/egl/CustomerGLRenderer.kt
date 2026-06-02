@@ -39,11 +39,11 @@ class CustomerGLRenderer : SurfaceHolder.Callback {
         surface.holder.addCallback(this)
 
         surface.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener{
-            override fun onViewDetachedFromWindow(v: View?) {
+            override fun onViewDetachedFromWindow(v: View) {
                 stop()
             }
 
-            override fun onViewAttachedToWindow(v: View?) {
+            override fun onViewAttachedToWindow(v: View) {
             }
         })
     }
@@ -106,6 +106,8 @@ class CustomerGLRenderer : SurfaceHolder.Callback {
 
         private var mLastTimestamp = 0L
 
+        private val mTimestampLock = Object()
+
         private var mRenderMode = RenderMode.RENDER_WHEN_DIRTY
 
         private fun holdOn() {
@@ -147,7 +149,7 @@ class CustomerGLRenderer : SurfaceHolder.Callback {
         }
 
         fun notifySwap(timeUs: Long) {
-            synchronized(mCurTimestamp) {
+            synchronized(mTimestampLock) {
                 mCurTimestamp = timeUs
             }
             notifyGo()
@@ -231,7 +233,7 @@ class CustomerGLRenderer : SurfaceHolder.Callback {
             val render = if (mRenderMode == RenderMode.RENDER_CONTINUOUSLY) {
                 true
             } else {
-                synchronized(mCurTimestamp) {
+                synchronized(mTimestampLock) {
                     if (mCurTimestamp > mLastTimestamp) {
                         mLastTimestamp = mCurTimestamp
                         true

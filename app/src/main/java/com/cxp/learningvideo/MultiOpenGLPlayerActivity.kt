@@ -3,13 +3,13 @@ package com.cxp.learningvideo
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
-import android.support.v7.app.AppCompatActivity
 import android.view.Surface
+import androidx.appcompat.app.AppCompatActivity
+import com.cxp.learningvideo.databinding.ActivityOpenglPlayerBinding
 import com.cxp.learningvideo.media.decoder.AudioDecoder
 import com.cxp.learningvideo.media.decoder.VideoDecoder
 import com.cxp.learningvideo.opengl.SimpleRender
 import com.cxp.learningvideo.opengl.drawer.VideoDrawer
-import kotlinx.android.synthetic.main.activity_opengl_player.*
 import java.util.concurrent.Executors
 
 
@@ -22,7 +22,10 @@ import java.util.concurrent.Executors
  * @Datetime 2019-10-26 21:07
  *
  */
-class MultiOpenGLPlayerActivity: AppCompatActivity() {
+class MultiOpenGLPlayerActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityOpenglPlayerBinding
+
     private val path = Environment.getExternalStorageDirectory().absolutePath + "/mvtest_2.mp4"
     private val path2 = Environment.getExternalStorageDirectory().absolutePath + "/mvtest.mp4"
 
@@ -32,7 +35,8 @@ class MultiOpenGLPlayerActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_opengl_player)
+        binding = ActivityOpenglPlayerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initFirstVideo()
         initSecondVideo()
         initRender()
@@ -55,7 +59,7 @@ class MultiOpenGLPlayerActivity: AppCompatActivity() {
             initPlayer(path2, Surface(it), false)
         }
         render.addDrawer(drawer)
-        gl_surface.addDrawer(drawer)
+        binding.glSurface.addDrawer(drawer)
 
         Handler().postDelayed({
             drawer.scale(0.5f, 0.5f)
@@ -75,8 +79,7 @@ class MultiOpenGLPlayerActivity: AppCompatActivity() {
     }
 
     private fun initRender() {
-        gl_surface.setEGLContextClientVersion(2)
-        gl_surface.setRenderer(render)
+        binding.glSurface.setEGLContextClientVersion(2)
+        binding.glSurface.setRenderer(render)
     }
-
 }

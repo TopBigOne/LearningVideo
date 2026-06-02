@@ -2,12 +2,12 @@ package com.cxp.learningvideo
 
 import android.os.Bundle
 import android.os.Environment
-import android.support.v7.app.AppCompatActivity
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import com.cxp.learningvideo.databinding.ActivitySimplePlayerBinding
 import com.cxp.learningvideo.media.decoder.AudioDecoder
 import com.cxp.learningvideo.media.decoder.VideoDecoder
 import com.cxp.learningvideo.media.muxer.MP4Repack
-import kotlinx.android.synthetic.main.activity_simple_player.*
 import java.util.concurrent.Executors
 
 
@@ -20,21 +20,28 @@ import java.util.concurrent.Executors
  * @Datetime 2019-10-12 09:33
  *
  */
-class SimplePlayerActivity: AppCompatActivity() {
-    val path = Environment.getExternalStorageDirectory().absolutePath + "/mvtest.mp4"
+class SimplePlayerActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivitySimplePlayerBinding
+
+    // note : 自己放一个可以播放的mp4 文件
+    // note : 自己放一个可以播放的mp4 文件
+    // note : 自己放一个可以播放的mp4 文件
+    val path = Environment.getExternalStorageDirectory().absolutePath + "/what.mp4"
     lateinit var videoDecoder: VideoDecoder
     lateinit var audioDecoder: AudioDecoder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_simple_player)
+        binding = ActivitySimplePlayerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initPlayer()
     }
 
     private fun initPlayer() {
         val threadPool = Executors.newFixedThreadPool(10)
 
-        videoDecoder = VideoDecoder(path, sfv, null)
+        videoDecoder = VideoDecoder(path, binding.sfv, null)
         threadPool.execute(videoDecoder)
 
         audioDecoder = AudioDecoder(path)
